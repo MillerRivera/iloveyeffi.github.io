@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Una Carta Para Ti</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --starry-blue: #0b1a3a;
+            --starry-yellow: #f7d72a;
+            --paper-bg: rgba(255, 253, 240, 0.95);
+            --text-color: #333;
+            --title-font: 'Cinzel', serif;
+            --body-font: 'Dancing Script', cursive;
+            --transition-speed: 0.5s;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+            background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/1920px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            box-sizing: border-box;
+            position: relative;
+            transition: background-color var(--transition-speed) ease;
+        }
+
+        /* Night mode overlay and stars */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            opacity: 0;
+            transition: opacity var(--transition-speed) ease;
+            pointer-events: none;
+            z-index: -1;
+        }
+        body.night-mode::after {
+            opacity: 0.5;
+        }
+
+        @keyframes twinkle {
+            0% { transform: scale(0.5, 0.5); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: scale(1.5, 1.5); opacity: 0; }
+        }
+
+        .star {
+            position: fixed;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+            box-shadow: 0 0 5px white;
+        }
+
+        .letter-container {
+            max-width: 800px;
+            width: 100%;
+            background: var(--paper-bg);
+            padding: 3rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 1.5s ease-in-out;
+            position: relative;
+            transition: background-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+        }
+
+        #night-mode-toggle {
+            position: absolute;
+            top: 1.5rem;
+            left: 2rem;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all var(--transition-speed) ease;
+            z-index: 20;
+        }
+        #night-mode-toggle:hover { transform: scale(1.1); }
+
+        .heart {
+            font-size: 2rem;
+            color: #ff4757;
+            position: absolute;
+            top: 1.5rem;
+            right: 2rem;
+            animation: beat 1.2s infinite cubic-bezier(0.215, 0.610, 0.355, 1);
+        }
+
+        h1, p { transition: color var(--transition-speed) ease; }
+        h1 { border-bottom-color: var(--starry-yellow); transition: all var(--transition-speed) ease; }
+
+        h1 {
+            font-family: var(--title-font);
+            font-weight: 700;
+            font-size: 2.5rem;
+            color: var(--starry-blue);
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--starry-yellow);
+            padding-bottom: 0.5rem;
+        }
+
+        p {
+            font-family: var(--body-font);
+            font-size: 2rem;
+            line-height: 3rem;
+            color: var(--text-color);
+            text-align: justify;
+        }
+
+        .signature {
+            text-align: right;
+            font-size: 2.2rem;
+            margin-top: 3rem;
+        }
+
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 4rem 0;
+            padding: 2rem 1rem;
+            position: relative;
+        }
+
+        .photo-gallery::before,
+        .photo-gallery::after {
+            content: '';
+            position: absolute;
+            left: 10%;
+            right: 10%;
+            height: 15px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%230b1a3a'%3E%3Cpath d='M12 4.248c-3.148-5.402-12-3.825-12 2.944 0 4.661 5.571 9.427 12 15.808 6.43-6.381 12-11.147 12-15.808 0-6.792-8.875-8.306-12-2.944z'/%3E%3C/svg%3E");
+            background-size: 20px 20px;
+            background-repeat: repeat-x;
+            background-position: center;
+            opacity: 0.6;
+            transition: background-image var(--transition-speed) ease;
+        }
+        .photo-gallery::before { top: 0; }
+        .photo-gallery::after { bottom: 0; }
+
+        .photo-card {
+            background: #fff;
+            border: 10px solid #fff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+        }
+        
+        .photo-card:nth-child(2n) {
+            transform: rotate(5deg);
+        }
+
+        .photo-card:nth-child(2n-1) {
+            transform: rotate(-5deg);
+        }
+
+        .photo-card:hover {
+            transform: rotate(0) scale(1.05);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+
+        .photo-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .placeholder {
+            width: 100%;
+            height: 100%;
+            background-color: #eee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-family: sans-serif;
+            font-size: 0.9rem;
+            color: #888;
+            padding: 0.5rem;
+        }
+
+        /* --- NIGHT MODE STYLES --- */
+        body.night-mode .letter-container {
+            background: rgba(11, 26, 58, 0.9);
+            box-shadow: 0 10px 30px rgba(247, 215, 42, 0.3);
+        }
+        body.night-mode #night-mode-toggle { background: #333; color: #fff; border-color: var(--starry-yellow); }
+        body.night-mode h1 { color: #fff; border-bottom-color: #fff; }
+        body.night-mode p { color: #e0e0e0; }
+        body.night-mode .signature { color: var(--starry-yellow); }
+        body.night-mode .photo-gallery::before, body.night-mode .photo-gallery::after {
+             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%23f7d72a'%3E%3Cpath d='M12 4.248c-3.148-5.402-12-3.825-12 2.944 0 4.661 5.571 9.427 12 15.808 6.43-6.381 12-11.147 12-15.808 0-6.792-8.875-8.306-12-2.944z'/%3E%3C/svg%3E");
+        }
+
+        @media (max-width: 768px) { /* ... existing responsive styles ... */ }
+    </style>
+</head>
+<body>
+
+    <div class="letter-container">
+        <button id="night-mode-toggle" title="Activar modo noche">🌙</button>
+        <div class="heart">♥</div>
+        
+        <h1>Para Mi Amor, Yeffi</h1>
+
+        <p id="letter-p1">
+            Mi princesa, te escribo estas palabras en un lienzo de estrellas, porque cada vez que pienso en ti,
+            siento que el universo entero cobra sentido. Estoy orgulloso de la mujer que eres , permiteme seguir
+            mostrando al universo como deberias ser tratada.
+        </p>
+        <p id="letter-p2">
+            Quería regalarte algo tan único, un pequeño detalle como esta cartita que sea solo nuestro,
+            inspirado en el arte que tanto te gusta y lleno de los recuerdos que hemos construido en este camino juntos.
+        </p>
+
+        <div class="photo-gallery">
+            <div class="photo-card"><img src="fotos/5A2C78A9-80FA-4826-A68E-5D6A698900E4_1_105_c.jpeg" alt="Recuerdo bonito 1"></div>
+            <div class="photo-card"><img src="fotos/AEBB687C-862F-4040-8D7E-420C4D929B2B_1_105_c.jpeg" alt="Recuerdo bonito 2"></div>
+            <div class="photo-card"><img src="fotos/C5529047-EB2E-4990-A774-95B6E8FF6CA5_1_105_c.jpeg" alt="Recuerdo bonito 3"></div>
+        </div>
+
+        <p id="letter-p3">
+            Cada una de estas imágenes guarda un instante magico de nuestra historia, un pedacito de la felicidad
+            que me has regalado. Espero que esta pequeña sorpresa te guste mucho.
+        </p>
+
+        <p class="signature">
+            Con todo mi amor, <br>
+            Miller Rivera
+        </p>
+    </div>
+
+<script>
+    const toggleButton = document.getElementById('night-mode-toggle');
+    const body = document.body;
+
+    const p1 = document.getElementById('letter-p1');
+    const p2 = document.getElementById('letter-p2');
+    const p3 = document.getElementById('letter-p3');
+
+    const originalTexts = {
+        p1: p1.innerHTML,
+        p2: p2.innerHTML,
+        p3: p3.innerHTML,
+    };
+
+    const nightTexts = {
+        p1: `Y ahora, bajo este manto de estrellas, el único universo que quiero explorar eres tú.`,
+        p2: `Gracias por tantas sonrisas. Esta sección de la carta la llamo : el modo noche.`,
+        p3: `Cuando llega el modo noche , me atrapas en tus brazos , el espacio se distorciona y te siento mas cerca, olvido todo y me pierdo en tu belleza.`
+    };
+
+    let starsCreated = false;
+
+    toggleButton.addEventListener('click', () => {
+        body.classList.toggle('night-mode');
+        
+        const isNightMode = body.classList.contains('night-mode');
+        
+        if (isNightMode) {
+            p1.innerHTML = nightTexts.p1;
+            p2.innerHTML = nightTexts.p2;
+            p3.innerHTML = nightTexts.p3;
+            toggleButton.innerHTML = '☀️';
+            toggleButton.title = 'Activar modo día';
+            if (!starsCreated) {
+                createStars();
+                starsCreated = true;
+            }
+        } else {
+            p1.innerHTML = originalTexts.p1;
+            p2.innerHTML = originalTexts.p2;
+            p3.innerHTML = originalTexts.p3;
+            toggleButton.innerHTML = '🌙';
+            toggleButton.title = 'Activar modo noche';
+        }
+    });
+
+    function createStars() {
+        const starCount = 200; /* Increased from 100 */
+        for (let i = 0; i < starCount; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = `${Math.random() * 100}vw`;
+            star.style.top = `${Math.random() * 100}vh`;
+            const size = Math.random() * 3; /* Increased from 2 */
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            star.style.animationDelay = `${Math.random() * 3}s`;
+            star.style.animationDuration = `${2 + Math.random() * 3}s`;
+            body.appendChild(star);
+        }
+    }
+</script>
+
+</body>
+</html>
