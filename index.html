@@ -218,38 +218,199 @@
              background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%23f7d72a'%3E%3Cpath d='M12 4.248c-3.148-5.402-12-3.825-12 2.944 0 4.661 5.571 9.427 12 15.808 6.43-6.381 12-11.147 12-15.808 0-6.792-8.875-8.306-12-2.944z'/%3E%3C/svg%3E");
         }
 
+        /* --- SOBRE ESTILOS --- */
+        #envelope-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(11,26,58,0.85);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.7s;
+        }
+
+        #envelope-overlay.open {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1.2s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1.2); }
+            50% { transform: translateY(-10px) scale(1.2); }
+        }
+
+        .envelope {
+            width: 320px;
+            height: 200px;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            font-family: var(--title-font);
+            perspective: 1000px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            background: linear-gradient(135deg, #fffbe6 0%, #f5efd6 50%, #fffbe6 100%);
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+            border: 2px solid #bfa76f;
+            border-bottom: none;
+            z-index: 2;
+            transform-origin: top center;
+            transition: transform 1.1s cubic-bezier(.77,0,.18,1.01);
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.3), 
+                       0 1px 2px rgba(191,167,111,0.2);
+            background-image: 
+                linear-gradient(45deg, transparent 48%, #bfa76f22 49%, #bfa76f22 51%, transparent 52%),
+                linear-gradient(-45deg, transparent 48%, #bfa76f22 49%, #bfa76f22 51%, transparent 52%);
+            background-size: 30px 30px;
+            background-position: center;
+        }
+
+        #envelope-overlay.open .envelope-flap {
+            transform: rotateX(-110deg);
+        }
+
+        .envelope-body {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 70%;
+            background: linear-gradient(45deg, #fffbe6 0%, #f5efd6 100%);
+            border-radius: 12px;
+            border: 2px solid #bfa76f;
+            z-index: 1;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1),
+                      inset 0 2px 8px rgba(255,255,255,0.2);
+            overflow: hidden;
+            background-image: 
+                linear-gradient(45deg, transparent 48%, #bfa76f22 49%, #bfa76f22 51%, transparent 52%),
+                linear-gradient(-45deg, transparent 48%, #bfa76f22 49%, #bfa76f22 51%, transparent 52%);
+            background-size: 30px 30px;
+            background-position: center;
+        }
+
+        .envelope-body::before,
+        .envelope-body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 0;
+            height: 0;
+            border-style: solid;
+        }
+
+        .envelope-body::before {
+            left: 0;
+            border-width: 110px 160px 0 0;
+            border-color: rgba(191,167,111,0.2) transparent transparent transparent;
+        }
+
+        .envelope-body::after {
+            right: 0;
+            border-width: 110px 0 0 160px;
+            border-color: rgba(191,167,111,0.2) transparent transparent transparent;
+        }
+
+        .envelope::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -20px;
+            right: -20px;
+            height: 40%;
+            background: rgba(0,0,0,0.1);
+            filter: blur(15px);
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0.5;
+            transform: translateY(30px) rotateX(60deg);
+        }
+
+        .envelope-text {
+            position: relative;
+            z-index: 3;
+            font-family: var(--body-font);
+            font-size: 2.1rem;
+            color: #8b7242;
+            margin-top: 40px;
+            text-align: center;
+            user-select: none;
+            text-shadow: 
+                0 2px 8px #fffbe6,
+                0 1px 0 #fffbe6,
+                1px 1px 2px rgba(139, 114, 66, 0.5);
+            letter-spacing: 0.05em;
+            transform: rotate(-2deg);
+            line-height: 1.5;
+        }
+
+        #envelope-overlay:after {
+            content: 'Haz click para abrir';
+            position: absolute;
+            bottom: 12%;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: #fffbe6;
+            font-family: var(--body-font);
+            font-size: 1.3rem;
+            letter-spacing: 0.05em;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
         @media (max-width: 768px) { /* ... existing responsive styles ... */ }
     </style>
 </head>
 <body>
 
-    <div class="letter-container">
+    <div id="envelope-overlay">
+        <div class="envelope">
+            <div class="envelope-flap"></div>
+            <div class="envelope-body"></div>
+            <div class="envelope-text">Con amor<br>Para Yeffi ♥</div>
+        </div>
+    </div>
+    <div class="letter-container" style="display:none;">
         <button id="night-mode-toggle" title="Activar modo noche">🌙</button>
         <div class="heart">♥</div>
-        
         <h1>Para Mi Amor, Yeffi</h1>
-
         <p id="letter-p1">
             Mi princesa, te escribo estas palabras en un lienzo de estrellas, porque cada vez que pienso en ti,
-            siento que el universo entero cobra sentido. Estoy orgulloso de la mujer que eres , permiteme seguir
-            mostrando al universo como deberias ser tratada.
+            siento que el universo entero cobra sentido. Estoy orgulloso de la mujer que eres, permíteme seguir
+            mostrando al universo cómo deberías ser tratada.
         </p>
         <p id="letter-p2">
             Quería regalarte algo tan único, un pequeño detalle como esta cartita que sea solo nuestro,
             inspirado en el arte que tanto te gusta y lleno de los recuerdos que hemos construido en este camino juntos.
         </p>
-
         <div class="photo-gallery">
             <div class="photo-card"><img src="fotos/5A2C78A9-80FA-4826-A68E-5D6A698900E4_1_105_c.jpeg" alt="Recuerdo bonito 1"></div>
             <div class="photo-card"><img src="fotos/AEBB687C-862F-4040-8D7E-420C4D929B2B_1_105_c.jpeg" alt="Recuerdo bonito 2"></div>
             <div class="photo-card"><img src="fotos/C5529047-EB2E-4990-A774-95B6E8FF6CA5_1_105_c.jpeg" alt="Recuerdo bonito 3"></div>
         </div>
-
         <p id="letter-p3">
-            Cada una de estas imágenes guarda un instante magico de nuestra historia, un pedacito de la felicidad
+            Cada una de estas imágenes guarda un instante mágico de nuestra historia, un pedacito de la felicidad
             que me has regalado. Espero que esta pequeña sorpresa te guste mucho.
         </p>
-
         <p class="signature">
             Con todo mi amor, <br>
             Miller Rivera
@@ -257,6 +418,19 @@
     </div>
 
 <script>
+    // --- SOBRE ANIMADO ---
+    const envelopeOverlay = document.getElementById('envelope-overlay');
+    const letterContainer = document.querySelector('.letter-container');
+    let envelopeOpened = false;
+    envelopeOverlay.addEventListener('click', function() {
+        if (envelopeOpened) return;
+        envelopeOpened = true;
+        envelopeOverlay.classList.add('open');
+        setTimeout(() => {
+            envelopeOverlay.style.display = 'none';
+            letterContainer.style.display = '';
+        }, 1200);
+    });
     const toggleButton = document.getElementById('night-mode-toggle');
     const body = document.body;
 
@@ -272,8 +446,8 @@
 
     const nightTexts = {
         p1: `Y ahora, bajo este manto de estrellas, el único universo que quiero explorar eres tú.`,
-        p2: `Gracias por tantas sonrisas. Esta sección de la carta la llamo : el modo noche.`,
-        p3: `Cuando llega el modo noche , me atrapas en tus brazos , el espacio se distorciona y te siento mas cerca, olvido todo y me pierdo en tu belleza.`
+        p2: `Gracias por tantas sonrisas. Esta sección de la carta la llamo: el modo noche.`,
+        p3: `Cuando llega el modo noche, me atrapas en tus brazos, el espacio se distorsiona y te siento más cerca, olvido todo y me pierdo en tu belleza.`
     };
 
     let starsCreated = false;
